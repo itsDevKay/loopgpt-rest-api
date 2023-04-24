@@ -82,7 +82,7 @@ def emit_line(speaker, line, socketio, data, end="\n"):
         line = str(line)
         socketio.emit(
             'gpt_response',
-            f'{speaker}: {line}\n'
+            f'{speaker}: {line}\n', room=data['room']
         )
 
 def prompt(speaker, line):
