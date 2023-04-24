@@ -1,0 +1,84 @@
+<html>
+<head>
+    <title>TurboGPT</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+</head>
+<body class="w-screen h-screen flex justify-center items-center">
+    <div class="w-1/2">
+        <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+            <div id="tooltip-fullscreen" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Show full screen
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
+            <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
+                <label for="editor" class="sr-only">Publish post</label>
+                <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required></textarea>
+            </div>
+        </div>
+        <button type="submit" 
+            class="start-gpt
+                inline-flex items-center px-5 py-2.5 text-sm font-medium hidden
+                text-center text-white bg-blue-700 rounded-lg focus:ring-4 
+                focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800
+            ">
+            Submit
+        </button>
+    </div>
+
+
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <script>
+        // url parameter setup
+        const url = new URL(location.href)
+        let search_params = new URLSearchParams(url.search)
+        const room = search_params.get('room')
+
+        let start_gpt = document.querySelector('.start-gpt')
+        let editor = document.querySelector('#editor')
+
+        const socket = io()
+        socket.on("connect", () => {
+            console.log(socket.id);
+            console.log('connect listener found')
+			socket.emit('join_room', {
+                room: room
+            })
+            console.log('emit join_room sent')
+        })
+
+        socket.on("join_room_announcement", (data) => {
+            console.log(`[✅] Room: ${data["room"]} was joined successfully.`)
+        })
+
+        socket.on("gpt_response", (data) => {
+            console.log(data)
+        })
+
+        socket.on("disconnect", () => {
+            socket.emit('left_room', {
+                room: room
+            })
+        })
+
+        editor.oninput = ((e) => {
+            if (e.target.value.trim().length > 0) {
+                start_gpt.classList.remove('hidden')
+            } else {
+                start_gpt.classList.add('hidden')
+            }
+        })
+
+        start_gpt.onclick = (() => {
+            if (editor.value.trim().length < 1) { return }
+            socket.emit('query_gpt', {
+                room: room,
+                query: editor.value.trim()
+            })
+        })
+
+    </script>
+</body>
+</html>

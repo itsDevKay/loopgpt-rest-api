@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>TurboGPT</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+</head>
+<body class="w-screen h-screen flex justify-center items-center">
+    <div class="w-1/2 flex justify-center">
+        <button class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+            Start TurboGPT
+        </button>
+    </div>
+
+    <script>
+        document.querySelector('button').onclick = (() => {
+            fetch('https://jsonplaceholder.typicode.com/todos/1')
+            .then(response => response.json())
+            .then(json => {
+                room = json.title.split(' ')[0]
+                console.log(room)
+                window.location.href = `/chat?room=${room}`
+            })  
+        })
+    </script>
+</body>
+</html>
