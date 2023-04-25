@@ -83,10 +83,16 @@
         })
 
         start_gpt.onclick = (() => {
-            if (editor.value.trim().length < 1) { return }
+            goals = []
+            document.querySelectorAll('.editor-container').forEach(c => {
+            if (c.querySelector('#editor').value.trim().length < 1 || goals.length >= 5) { return } 
+                content = c.querySelector('#editor').value.trim()
+                goals.push(content)
+            })
+            console.log(goals)
             socket.emit('query_gpt', {
                 room: room,
-                query: editor.value.trim()
+                goals: goals
             })
         })
 
