@@ -1,5 +1,5 @@
-from app.loopgpt.tools.base_tool import BaseTool
-from app.loopgpt.models.openai_ import chat
+from loopgpt.tools.base_tool import BaseTool
+from loopgpt.models.openai_ import chat
 import subprocess
 import sys
 import os

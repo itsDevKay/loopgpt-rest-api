@@ -1,5 +1,5 @@
-from app.loopgpt.memory.base_memory import BaseMemory
-from app.loopgpt.memory.local_memory import LocalMemory
+from loopgpt.memory.base_memory import BaseMemory
+from loopgpt.memory.local_memory import LocalMemory
 
 
 user_providers = {}

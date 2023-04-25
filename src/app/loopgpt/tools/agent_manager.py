@@ -1,4 +1,4 @@
-from app.loopgpt.tools.base_tool import BaseTool
+from loopgpt.tools.base_tool import BaseTool
 from typing import *
 from uuid import uuid4
 
@@ -24,7 +24,7 @@ class CreateAgent(_AgentMangerTool):
         }
 
     def run(self, name="", task="", prompt=""):
-        from app.loopgpt.agent import Agent
+        from loopgpt.agent import Agent
 
         agent = Agent(
             name=name, description=f"An agent for performing this specific task: {task}"

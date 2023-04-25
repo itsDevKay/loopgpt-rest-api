@@ -1,5 +1,5 @@
-from app.loopgpt.memory.base_memory import BaseMemory
-from app.loopgpt.embeddings import from_config as embedding_provider_from_config
+from loopgpt.memory.base_memory import BaseMemory
+from loopgpt.embeddings import from_config as embedding_provider_from_config
 import numpy as np
 from typing import *
 

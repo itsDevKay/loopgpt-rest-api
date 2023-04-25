@@ -1,6 +1,6 @@
 from streamlit_chat import message
-from app.loopgpt.agent import Agent
-from app.loopgpt.constants import PROCEED_INPUT
+from loopgpt.agent import Agent
+from loopgpt.constants import PROCEED_INPUT
 import streamlit as st
 
 if "agent" not in st.session_state:

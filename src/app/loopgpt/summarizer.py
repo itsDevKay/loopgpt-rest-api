@@ -4,9 +4,9 @@ Adapted from Auto-GPT (https://github.com/Significant-Gravitas/Auto-GPT)
 
 from typing import *
 from tqdm import tqdm
-from app.loopgpt.models.openai_ import chat, count_tokens
+from loopgpt.models.openai_ import chat, count_tokens
 
-import app.loopgpt.utils.spinner
+import loopgpt.utils.spinner
 
 
 class Summarizer:
@@ -14,7 +14,7 @@ class Summarizer:
         self.model = model
 
     def summarize(self, text: str, query: str):
-        spinner = app.loopgpt.utils.spinner.ACTIVE_SPINNER
+        spinner = loopgpt.utils.spinner.ACTIVE_SPINNER
         if spinner:
             spinner.hide()
         summaries = []

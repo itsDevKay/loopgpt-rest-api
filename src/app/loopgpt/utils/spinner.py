@@ -1,4 +1,4 @@
-from app.loopgpt.constants import SPINNER_START_DELAY, SPINNER_ENABLED
+from loopgpt.constants import SPINNER_START_DELAY, SPINNER_ENABLED
 from logging import StreamHandler
 from itertools import cycle
 from functools import wraps

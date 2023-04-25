@@ -9,13 +9,15 @@ HEADER = r"""
 +------------------------------------------------------------+
 """
 
-from app.loopgpt.constants import (
+from loopgpt.constants import (
     DEFAULT_AGENT_NAME,
     DEFAULT_AGENT_DESCRIPTION,
 )
 from colorama import Fore, Style
 
 import os
+
+import socketio
 
 LOOP_GPT = Fore.GREEN + "LoopGPT"
 REASONING = Fore.LIGHTBLUE_EX + "REASONING"
@@ -68,21 +70,26 @@ def print_line(speaker, line, end="\n"):
         line = str(line)
         print(f"{profiles[speaker]}: {Style.RESET_ALL}{line}", end=end)
         
-def emit_line(speaker, line, socketio, data, end="\n"):
+def emit_line(speaker, line, sio, room, end="\n"):
     if isinstance(line, list):
         indent = " " * 4
-        emit_line(speaker, "", socketio, data)
+        emit_line(speaker, "", sio, room)
         for i, l in enumerate(line):
-            socketio.emit(
+            sio.emit(
                 'gpt_response',
-                (f'{indent + l}', end if i == len(line) - 1 else "\n"),
-                room=data['room']
+                {
+                    'message': (f'{indent + l}', end if i == len(line) - 1 else "\n"),
+                    'room': room
+                }
             )
     else:
         line = str(line)
-        socketio.emit(
+        sio.emit(
             'gpt_response',
-            f'{speaker}: {line}\n', room=data['room']
+            {
+                'message': f'{speaker}: {line}\n',
+                'room': room
+            }
         )
 
 def prompt(speaker, line):
@@ -199,7 +206,10 @@ def cli(agent, continuous=False):
         resp = agent.chat(inp)
 
 
-def cli_socket(agent, socketio, data, continuous=False):
+def cli_socket(agent, continuous=False):
+    sio = socketio.Client()
+    sio.connect(os.environ.get('socket_server'))
+    room = os.environ.get('socket_room')
     # print(HEADER)
     res = check_agent_config(agent)
     if res == -1:
@@ -208,7 +218,7 @@ def cli_socket(agent, socketio, data, continuous=False):
     resp = agent.chat()
     while True:
         if isinstance(resp, str):
-            emit_line(agent.name, resp, socketio, data)
+            emit_line(agent.name, resp, sio, room)
         else:
             if "thoughts" in resp:
                 msgs = {}
@@ -228,7 +238,7 @@ def cli_socket(agent, socketio, data, continuous=False):
                 if "speak" in thoughts:
                     msgs["speak"] = "(voice) " + thoughts["speak"]
                 for kind, msg in msgs.items():
-                    emit_line(kind, msg, socketio, data, end="\n\n")
+                    emit_line(kind, msg, sio, room, end="\n\n")
             if "command" in resp:
                 command = resp["command"]
                 if (
@@ -240,7 +250,7 @@ def cli_socket(agent, socketio, data, continuous=False):
                         emit_line(
                             "command",
                             f"{command['name']}, Args: {command['args']}",
-                            socketio, data,
+                            sio, room,
                             end="\n\n",
                         )
                     while True:
@@ -257,9 +267,9 @@ def cli_socket(agent, socketio, data, continuous=False):
                         cmd = agent.staging_tool.get("name", agent.staging_tool)
                         if cmd == "task_complete":
                             return
-                        emit_line("system", f"Executing command: {cmd}", socketio, data)
+                        emit_line("system", f"Executing command: {cmd}", sio, room)
                         resp = agent.chat(agent.next_prompt, True)
-                        emit_line("system", f"{cmd} output: {agent.tool_response}", socketio, data)
+                        emit_line("system", f"{cmd} output: {agent.tool_response}", sio, room)
                     elif yn == "n":
                         feedback = input(
                             "Enter feedback (Why not execute the command?): "

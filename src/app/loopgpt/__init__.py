@@ -1,17 +1,17 @@
 __version__ = "0.0.8"
 
 
-from app.loopgpt.agent import Agent
-from app.loopgpt.tools import *
-from app.loopgpt.memory import *
-from app.loopgpt.embeddings import *
+from loopgpt.agent import Agent
+from loopgpt.tools import *
+from loopgpt.memory import *
+from loopgpt.embeddings import *
 
 agent_from_config = Agent.from_config
-from app.loopgpt.tools import from_config as tool_from_config
-from app.loopgpt.memory import from_config as memory_from_config
-from app.loopgpt.embeddings import from_config as embedding_provider_from_config
+from loopgpt.tools import from_config as tool_from_config
+from loopgpt.memory import from_config as memory_from_config
+from loopgpt.embeddings import from_config as embedding_provider_from_config
 
-from app.loopgpt.logger import logger
+from loopgpt.logger import logger
 from colorama import Fore, Style
 
 import os

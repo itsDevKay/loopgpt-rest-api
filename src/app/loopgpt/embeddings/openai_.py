@@ -1,4 +1,4 @@
-from app.loopgpt.embeddings.provider import BaseEmbeddingProvider
+from loopgpt.embeddings.provider import BaseEmbeddingProvider
 import numpy as np
 
 

@@ -8,10 +8,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchWindowException
-from app.loopgpt.tools.base_tool import BaseTool
+from loopgpt.tools.base_tool import BaseTool
 from selenium.webdriver.support import expected_conditions
-from app.loopgpt.summarizer import Summarizer
-from app.loopgpt.logger import logger
+from loopgpt.summarizer import Summarizer
+from loopgpt.logger import logger
 import logging
 import atexit
 

@@ -1,1 +1,1 @@
-from app.loopgpt.models.openai_ import *
+from loopgpt.models.openai_ import *

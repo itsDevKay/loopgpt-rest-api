@@ -1,4 +1,4 @@
-from app.loopgpt.tools.base_tool import BaseTool
+from loopgpt.tools.base_tool import BaseTool
 import subprocess
 
 

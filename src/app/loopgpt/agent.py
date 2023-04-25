@@ -1,4 +1,4 @@
-from app.loopgpt.constants import (
+from loopgpt.constants import (
     DEFAULT_RESPONSE_FORMAT_,
     INIT_PROMPT,
     DEFAULT_AGENT_NAME,
@@ -6,15 +6,15 @@ from app.loopgpt.constants import (
     NEXT_PROMPT,
     NEXT_PROMPT_SMALL,
 )
-from app.loopgpt.memory import from_config as memory_from_config
-from app.loopgpt.models.openai_ import chat, count_tokens, get_token_limit
-from app.loopgpt.tools import builtin_tools, from_config as tool_from_config
-from app.loopgpt.tools.code import ai_function
-from app.loopgpt.memory.local_memory import LocalMemory
-from app.loopgpt.embeddings.openai_ import OpenAIEmbeddingProvider
-from app.loopgpt.utils.spinner import spinner
-from app.loopgpt.loops import cli
-from app.loopgpt.loops.repl import cli_socket
+from loopgpt.memory import from_config as memory_from_config
+from loopgpt.models.openai_ import chat, count_tokens, get_token_limit
+from loopgpt.tools import builtin_tools, from_config as tool_from_config
+from loopgpt.tools.code import ai_function
+from loopgpt.memory.local_memory import LocalMemory
+from loopgpt.embeddings.openai_ import OpenAIEmbeddingProvider
+from loopgpt.utils.spinner import spinner
+from loopgpt.loops import cli
+from loopgpt.loops.repl import cli_socket
 
 
 from typing import *
@@ -423,5 +423,5 @@ class Agent:
     def cli(self, continuous=False):
         cli(self, continuous=continuous)
 
-    def cli_socket(self, socketio, data, continuous=False):
-        cli_socket(self, socketio, data, continuous=continuous)
+    def cli_socket(self, continuous=False):
+        cli_socket(self, continuous=continuous)

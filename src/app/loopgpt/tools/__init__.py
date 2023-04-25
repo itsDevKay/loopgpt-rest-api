@@ -1,14 +1,14 @@
-from app.loopgpt.tools.agent_manager import (
+from loopgpt.tools.agent_manager import (
     CreateAgent,
     MessageAgent,
     DeleteAgent,
     ListAgents,
 )
-from app.loopgpt.tools.base_tool import BaseTool
-from app.loopgpt.tools.browser import Browser
-from app.loopgpt.tools.code import ExecutePythonFile, EvaluateCode, ImproveCode, WriteTests
-from app.loopgpt.tools.google_search import GoogleSearch
-from app.loopgpt.tools.filesystem import (
+from loopgpt.tools.base_tool import BaseTool
+from loopgpt.tools.browser import Browser
+from loopgpt.tools.code import ExecutePythonFile, EvaluateCode, ImproveCode, WriteTests
+from loopgpt.tools.google_search import GoogleSearch
+from loopgpt.tools.filesystem import (
     ReadFromFile,
     WriteToFile,
     AppendToFile,
@@ -17,8 +17,8 @@ from app.loopgpt.tools.filesystem import (
     ListFiles,
     FileSystemTools,
 )
-from app.loopgpt.tools.shell import Shell
-from app.loopgpt.tools.memory_manager import AddToMemory
+from loopgpt.tools.shell import Shell
+from loopgpt.tools.memory_manager import AddToMemory
 
 
 user_tools = {}

@@ -1,5 +1,5 @@
-from app.loopgpt.embeddings.provider import BaseEmbeddingProvider
-from app.loopgpt.embeddings.openai_ import OpenAIEmbeddingProvider
+from loopgpt.embeddings.provider import BaseEmbeddingProvider
+from loopgpt.embeddings.openai_ import OpenAIEmbeddingProvider
 
 user_providers = {}
 

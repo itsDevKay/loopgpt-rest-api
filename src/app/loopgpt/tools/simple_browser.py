@@ -4,8 +4,8 @@ Adapted from Auto-GPT (https://github.com/Significant-Gravitas/Auto-GPT)
 
 
 from bs4 import BeautifulSoup
-from app.loopgpt.tools.base_tool import BaseTool
-from app.loopgpt.summarizer import Summarizer
+from loopgpt.tools.base_tool import BaseTool
+from loopgpt.summarizer import Summarizer
 import atexit
 import requests
 
@@ -16,8 +16,8 @@ class SimpleBrowser(BaseTool):
     Usage:
 
     ```
-    import app.loopgpt
-    agent = app.loopgpt.Agent(...)
+    import loopgpt
+    agent = loopgpt.Agent(...)
     agent.tools["browser"] = SimpleBrowser()
     ```
     """

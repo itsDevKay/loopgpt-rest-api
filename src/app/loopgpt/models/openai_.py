@@ -1,5 +1,5 @@
 from typing import *
-from app.loopgpt.logger import logger
+from loopgpt.logger import logger
 import tiktoken
 import time
 import os
