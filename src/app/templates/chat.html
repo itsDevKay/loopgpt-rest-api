@@ -5,23 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 </head>
-<body class="w-screen h-screen flex justify-center items-center">
-    <div class="w-1/2">
-        <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-            <div id="tooltip-fullscreen" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                Show full screen
-                <div class="tooltip-arrow" data-popper-arrow></div>
+<body class="w-screen h-full flex flex-col justify-center items-center bg-slate-800">
+    <h2 class="text-3xl mb-3 font-bold text-white">TurboGPT</h2>
+    <div class="w-10/12 sm:w-1/2 p-5 shadow-md rounded-lg bg-slate-700">
+        <div>
+            <label for="gpt-name" class="block mb-2 text-sm font-medium text-white">Name your GPT Agent</label>
+            <input type="text" id="gpt-name" placeholder="ResearchGPT" class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John" required>
+        </div>
+        <div>
+            <label for="gpt-description" class="block mb-2 mt-3 text-sm font-medium text-white">Give your agent a role</label>
+            <input type="text" id="gpt-description" placeholder="an AI assistant that researches and finds the best tech products" class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John" required>
+        </div>
+        <label for="gpt-description" class="block mb-2 mt-3 text-sm font-medium text-white">List up to 5 goals below:</label>
+        <div>
+            <div class="editor-container w-full mb-4 rounded-lg bg-white border border-gray-200 rounded-lg bg-slate-500">
+                <div class="px-4 py-2 bg-slate-500 rounded-lg">
+                    <label for="editor" class="sr-only">Goal</label>
+                    <textarea id="editor" rows="3" class="text-white resize-none block w-full px-0 text-sm text-white bg-slate-500 border-0 focus:ring-0" placeholder="Analyze specs, prices and reviews to find the top 5 best headphones." required></textarea>
+                </div>
             </div>
-            <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
-                <label for="editor" class="sr-only">Publish post</label>
-                <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required></textarea>
-            </div>
+        </div>
+        <div onclick="createNewGoal()" class="w-full mt-3 mb-4 pl-2.5 bg-slate-500 border-2 border-slate-700 cursor-pointer border-dashed rounded-full">
+            <p class="text-sm text-white p-2 text-center">Add new goal</p>
         </div>
         <button type="submit" 
             class="start-gpt
                 inline-flex items-center px-5 py-2.5 text-sm font-medium hidden
                 text-center text-white bg-blue-700 rounded-lg focus:ring-4 
-                focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800
+                focus:ring-blue-200 hover:bg-blue-800
             ">
             Submit
         </button>
@@ -78,6 +89,16 @@
                 query: editor.value.trim()
             })
         })
+
+        let goal_containers = 1
+        const createNewGoal = () => {
+            if (goal_containers >= 5) { return }
+            let editor_container = document.querySelector('.editor-container').cloneNode(true)
+            editor_container.querySelector('#editor').value = ''
+            document.querySelector('.editor-container')
+                .parentElement.appendChild(editor_container)
+            goal_containers += 1
+        }
 
     </script>
 </body>

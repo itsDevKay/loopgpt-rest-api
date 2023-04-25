@@ -5,7 +5,7 @@ from app.models import *
 from flask_socketio import send, emit, join_room, leave_room
 
 from dotenv import load_dotenv
-from app.loopgpt import Agent
+# from app.loopgpt import Agent
 
 load_dotenv()
 agents = []
@@ -24,17 +24,21 @@ def room_left_handler(data):
 @socketio.on('query_gpt')
 def query_gpt(data):
     room = data['room']
-    query = data['query']
-    app.logger.info(f'[✅] Query Received: "{query}"')
+    goals = data['goals']
+    app.logger.info(f'[✅] Goals Received: "{goals}"')
 
-    a = Agent()
-    a.name = 'Quazimoto'
-    a.description = 'Lorem ipsum dolor isom'
-    a.goals = [
-        "Search for the best headphones on Google",
-        "Analyze specs, prices and reviews to find the top 5 best headphones",
-        "Write the list of the top 5 best headphones and their prices to a file",
-        "Summarize the pros and cons of each headphone and write it to a different file called 'summary.txt'",
-    ]
-    app.logger.info(f'[✅] Agent [{a.name}] Started. Description: "{a.description}"')
-    a.cli_socket(socketio, data, continuous=True)
+    # START DOCKER CONTAINER WITH ENV VARIABLES
+    # ...
+    app.logger.info(f'[✅] Docker container started. Agent loading.."')
+    socketio.emit(
+        'docker_container_started',
+        f'[✅] Docker container started. Agent loading.."',
+        room=room
+    )
+
+@socketio.on('gpt_response')
+def gpt_response(data):
+    room = data['room']
+    message = data['message']
+    socketio.emit('gpt_response', message, room=room)
+    app.logger.info(f'[✅] GPT Responded successfully to room [ {room} ] with message.')
