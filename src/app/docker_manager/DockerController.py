@@ -35,7 +35,7 @@ class DockerController:
         
     def run_image(self, image, environment={}, command=None, auto_remove=True, detach=True):
         try:
-            container = self.client.run(
+            container = self.client.containers.run(
                 image=image,
                 environment=environment,
                 command=command,
