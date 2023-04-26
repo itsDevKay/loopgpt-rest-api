@@ -203,7 +203,7 @@ def cli(agent, continuous=False):
         inp = input(INPUT_PROMPT)
         if inp.lower().strip() == "exit":
             return
-        resp = agent.chat(agent.next_prompt + "\n\n" + inp)
+        esp = agent.chat(agent.next_prompt + "\n\n" + inp)
 
 
 def cli_socket(agent, continuous=False):
@@ -285,4 +285,4 @@ def cli_socket(agent, continuous=False):
         inp = input(INPUT_PROMPT)
         if inp.lower().strip() == "exit":
             return
-        resp = agent.chat(agent.next_prompt + "\n\n" + inp)
+        esp = agent.chat(agent.next_prompt + "\n\n" + inp)

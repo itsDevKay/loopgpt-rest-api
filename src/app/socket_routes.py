@@ -12,6 +12,10 @@ load_dotenv()
 agents = []
 dmanager = DockerController()
 
+@socketio.on('list_agents')
+def list_active_agents():
+    socketio.emit('list_agents_response', agents, room='agent_manager')
+
 @socketio.on('join_room')
 def handle_join_room(data):
     join_room(data['room'])
@@ -25,16 +29,16 @@ def room_left_handler(data):
 
 @socketio.on('query_gpt')
 def query_gpt(data):
-    socket_server = '127.0.0.1:8000'
+    socket_server = 'http://192.168.0.222:8000'
     room = data['room']
-    agent_name = data['name']
-    agent_description = data['description']
+    agent_name = data['agent_name']
+    agent_description = data['agent_description']
     goals = data['goals']
     str_goals = ''
     for g in goals: str_goals += f'{str(g)}/;'
 
-    agent_continuous = data['continuous']
-    openai_api_key = data['openai_api_key']
+    agent_continuous = data['agent_continuous']
+    openai_api_key = data['OPENAI_API_KEY']
 
     app.logger.info(f'[✅] Goals Received: "{goals}"')
 
@@ -50,7 +54,7 @@ def query_gpt(data):
 
     # START DOCKER CONTAINER WITH ENV VARIABLES
     # ...
-    resp = dmanager.run(
+    resp = dmanager.run_image(
         image = 'turbogpt',
         environment = env_variables
     )
@@ -64,11 +68,11 @@ def query_gpt(data):
     
     agent_info = {
         'room': room,
-        'container': resp['response'][0],
+        'container': resp['response'].__dict__,
         'initiated_at': datetime.datetime.utcnow()
     }
     app.logger.info(agent_info)
-    agents.push(agent_info)
+    agents.append(agent_info)
 
     app.logger.info(f'[✅] Docker container started. Agent loading.."')
     socketio.emit(

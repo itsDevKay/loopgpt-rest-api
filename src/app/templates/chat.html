@@ -50,7 +50,8 @@
         let start_gpt = document.querySelector('.start-gpt')
         let editor = document.querySelector('#editor')
 
-        const socket = io('127.0.0.1:8000')
+        let socket_server = 'http://192.168.0.222:8000'
+        const socket = io()
         socket.on("connect", () => {
             console.log(socket.id);
             console.log('connect listener found')
@@ -91,8 +92,13 @@
             })
             console.log(goals)
             socket.emit('query_gpt', {
+                agent_name: 'Quazimoto',
+                agent_description: 'a lazy researcher',
+                goals: goals,
+                agent_continuous: true,
+                OPENAI_API_KEY: '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',
                 room: room,
-                goals: goals
+                socket_server: socket_server,
             })
         })
 
