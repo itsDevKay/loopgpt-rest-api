@@ -36,7 +36,8 @@ class WriteToFile(BaseTool):
     def run(self, file, content):
         with open(file, "w") as f:
             f.write(content)
-        return {"success": True}
+            filepath = os.path.abspath(f)       
+        return {"success": True, "filepath": filepath}
 
 
 class AppendToFile(BaseTool):
@@ -54,7 +55,8 @@ class AppendToFile(BaseTool):
     def run(self, file, content):
         with open(file, "a") as f:
             f.write(content)
-        return {"success": True}
+            filepath = os.path.abspath(f)
+        return {"success": True, "filepath": filepath}
 
 
 class DeleteFile(BaseTool):

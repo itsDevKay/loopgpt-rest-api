@@ -68,3 +68,12 @@ class DockerController:
             return { 'status': 'ImageNotFound', 'response': str(e) }
         except docker.errors.APIError as e:
             return { 'status': 'APIError', 'response': str(e) }
+        
+    def get_container(self, id):
+        try:
+            container = self.client.get(id)
+            return container
+        except docker.errors.NotFound as e:
+            return { 'status': 'NotFound', 'response': str(e) }
+        except docker.errors.APIError as e:
+            return { 'status': 'APIError', 'response': str(e) }

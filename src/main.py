@@ -14,10 +14,12 @@ def init_app(debug=True, port=8000, host='0.0.0.0'):
         socketio.run(app, debug=debug, port=port, host=host)
     except ModuleNotFoundError as e:
         module = [str(w).replace("'","") for w in str(e).split()][-1]
-        if module != 'loopgpt':
+        if module != 'loopgpt' and module.lower() != 'dotenv':
             print(f'Module not found: \'{module}\'. Installing now.')
             CommandLine.execute(f'sudo pip3 install -U {module.title()}')
             init_app()
+        elif module.lower() == 'dotenv':
+            CommandLine.execute('sudo pip3 install -U python3-dotenv')
         else:
             print(str(e))
 

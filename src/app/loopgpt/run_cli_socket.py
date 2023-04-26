@@ -1,3 +1,4 @@
+import os
 from loopgpt import Agent
 import sys
 import os

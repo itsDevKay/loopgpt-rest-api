@@ -87,3 +87,14 @@ def gpt_response(data):
     message = data['message']
     socketio.emit('gpt_response', message, room=room)
     app.logger.info(f'[✅] GPT Responded successfully to room [ {room} ] with message.')
+
+@socketio.on('kill_container')
+def kill_container(data):
+    room = data['room']
+    container_id = data['container_id']
+    container = dmanager.get_container(container_id)
+    if container['status'] != 200:
+        socketio.emit('kill_response', f'No container found with id: {container_id}', room=room)
+        return
+    container.kill()
+    socketio.emit('kill_response', f'Container [ {container_id} ] has been killed.', room=room)
