@@ -1,5 +1,8 @@
 from loopgpt import Agent
+import sys
 import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 a = Agent()
 a.name = os.environ.get('agent_name')
