@@ -50,7 +50,7 @@
         let start_gpt = document.querySelector('.start-gpt')
         let editor = document.querySelector('#editor')
 
-        const socket = io()
+        const socket = io('127.0.0.1:8000')
         socket.on("connect", () => {
             console.log(socket.id);
             console.log('connect listener found')

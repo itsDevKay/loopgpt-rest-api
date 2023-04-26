@@ -1,14 +1,16 @@
 from app import db, csrf, socketio
 from app.helpers import *
 from app.models import *
+from app.docker_manager.DockerController import DockerController
 
 from flask_socketio import send, emit, join_room, leave_room
-
 from dotenv import load_dotenv
-# from app.loopgpt import Agent
+
+import datetime
 
 load_dotenv()
 agents = []
+dmanager = DockerController()
 
 @socketio.on('join_room')
 def handle_join_room(data):
@@ -23,12 +25,51 @@ def room_left_handler(data):
 
 @socketio.on('query_gpt')
 def query_gpt(data):
+    socket_server = '127.0.0.1:8000'
     room = data['room']
+    agent_name = data['name']
+    agent_description = data['description']
     goals = data['goals']
+    str_goals = ''
+    for g in goals: str_goals += f'{str(g)}/;'
+
+    agent_continuous = data['continuous']
+    openai_api_key = data['openai_api_key']
+
     app.logger.info(f'[✅] Goals Received: "{goals}"')
+
+    env_variables = {
+        'agent_name': agent_name,
+        'agent_description': agent_description,
+        'agent_goals': str_goals,
+        'agent_continuous': agent_continuous,
+        'OPENAI_API_KEY': openai_api_key,
+        'socket_server': socket_server,
+        'socket_room': room
+    }
 
     # START DOCKER CONTAINER WITH ENV VARIABLES
     # ...
+    resp = dmanager.run(
+        image = 'turbogpt',
+        environment = env_variables
+    )
+    if resp['status'] != 200:
+        socketio.emit(
+            'image_failed_to_run',
+            resp['response'],
+            room=room    
+        )
+        return
+    
+    agent_info = {
+        'room': room,
+        'container': resp['response'][0],
+        'initiated_at': datetime.datetime.utcnow()
+    }
+    app.logger.info(agent_info)
+    agents.push(agent_info)
+
     app.logger.info(f'[✅] Docker container started. Agent loading.."')
     socketio.emit(
         'docker_container_started',
