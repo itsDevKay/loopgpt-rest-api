@@ -8,4 +8,4 @@ RUN pip3 install python-socketio[client] flask flask-sqlalchemy flask-cors flask
 RUN git clone https://github.com/itsDevKay/loopgpt-socket-api
 RUN python3 -m pip install -r /loopgpt-socket-api/requirements.txt
 
-CMD ['python3', '/loopgpt-socket-api/src/app/loopgpt/run_cli_socket.py']
+CMD [python3, '/loopgpt-socket-api/src/app/loopgpt/run_cli_socket.py']
