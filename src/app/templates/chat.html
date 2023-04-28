@@ -5,16 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 </head>
-<body class="w-screen h-full flex flex-col justify-center items-center bg-slate-800">
+<body class="w-screen h-auto mt-20 flex flex-col justify-center items-center bg-slate-800">
+    <div>
+        <div
+            class="notification-banner absolute right-20 pointer-events-auto mx-auto hidden w-96 max-w-full rounded-lg bg-white bg-clip-padding text-sm shadow-lg shadow-black/5 data-[te-toast-show]:block data-[te-toast-hide]:hidden dark:bg-neutral-600"
+            id="static-example"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-te-autohide="false"
+            data-te-toast-init
+            style="opacity: 0; transition: 0.4s; -webkit-transition: 0.4s; -moz-transition: 0.4s; -o-transition: 0.4s;"
+            data-te-toast-show>
+            <div
+                class="flex items-center justify-between rounded-t-lg border-b-2 border-neutral-100 border-opacity-100 bg-white bg-clip-padding px-4 pb-2 pt-2.5 dark:border-opacity-50 dark:bg-neutral-600">
+                <p class="font-bold text-neutral-500 dark:text-neutral-200">
+                TurboGPT
+                </p>
+                <div class="flex items-center">
+                <button
+                    type="button"
+                    class="ml-2 close-notification box-content rounded-none border-none opacity-80 hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                    data-te-toast-dismiss
+                    aria-label="Close">
+                    <span
+                    class="w-[1em] focus:opacity-100 disabled:pointer-events-none disabled:select-none disabled:opacity-25 [&.disabled]:pointer-events-none [&.disabled]:select-none [&.disabled]:opacity-25">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="h-6 w-6">
+                        <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    </span>
+                </button>
+                </div>
+            </div>
+            <div
+                class="notification break-words rounded-b-lg bg-white px-4 py-4 text-neutral-700 dark:bg-neutral-600 dark:text-neutral-200">
+                Static Example
+            </div>
+        </div>
+    </div>
     <h2 class="text-3xl mb-3 font-bold text-white">TurboGPT</h2>
     <div class="w-10/12 sm:w-1/2 p-5 shadow-md rounded-lg bg-slate-700">
         <div>
             <label for="gpt-name" class="block mb-2 text-sm font-medium text-white">Name your GPT Agent</label>
-            <input type="text" id="gpt-name" placeholder="ResearchGPT" class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John" required>
+            <input type="text" id="gpt-name" placeholder="ResearchGPT" class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"required>
+        </div>
+        <div>
+            <label for="gpt-key" class="block mb-2 text-sm font-medium text-white">Enter your OPENAI_API_KEY</label>
+            <input type="text" id="gpt-key" placeholder="sk-..." class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
         </div>
         <div>
             <label for="gpt-description" class="block mb-2 mt-3 text-sm font-medium text-white">Give your agent a role</label>
-            <input type="text" id="gpt-description" placeholder="an AI assistant that researches and finds the best tech products" class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John" required>
+            <input type="text" id="gpt-description" placeholder="an AI assistant that researches and finds the best tech products" class="bg-slate-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
         </div>
         <label for="gpt-description" class="block mb-2 mt-3 text-sm font-medium text-white">List up to 5 goals below:</label>
         <div>
@@ -30,13 +80,26 @@
         </div>
         <button type="submit" 
             class="start-gpt
-                inline-flex items-center px-5 py-2.5 text-sm font-medium hidden
-                text-center text-white bg-blue-700 rounded-lg focus:ring-4 
-                focus:ring-blue-200 hover:bg-blue-800
+                inline-flex items-center px-5 py-2.5 text-sm font-medium
+                text-center text-white bg-[#D9CD86] rounded-lg focus:ring-4 
+                focus:ring-[#D9CD86] hover:bg-[#D9CD86]
             ">
             Submit
         </button>
     </div>
+
+    <div class="output w-10/12 sm:w-1/2 p-5 mt-5 shadow-md rounded-lg bg-slate-700">
+        <pre class="outtext text-white" style="white-space: pre-wrap;"></p>
+    </div>
+
+    <button 
+        class="kill-docker mt-5 mb-10
+            inline-flex items-center px-5 py-2.5 text-sm font-medium
+            text-center text-white bg-red-700 rounded-lg focus:ring-4 
+            focus:ring-red-200 hover:bg-red-800
+        ">
+        Stop
+    </button>
 
 
 
@@ -49,6 +112,14 @@
 
         let start_gpt = document.querySelector('.start-gpt')
         let editor = document.querySelector('#editor')
+        let output = document.querySelector('.output')
+        let outtext = document.querySelector('.outtext')
+        let killDocker = document.querySelector('.kill-docker')
+        let notification = document.querySelector('.notification')
+        let notificationBanner = document.querySelector('.notification-banner')
+        let closeNotification = document.querySelector('.close-notification')
+
+        let container_id
 
         let socket_server = 'http://192.168.0.222:8000'
         const socket = io()
@@ -65,14 +136,38 @@
             console.log(`[✅] Room: ${data["room"]} was joined successfully.`)
         })
 
-        socket.on("gpt_response", (data) => {
-            console.log(data)
-        })
-
         socket.on("disconnect", () => {
             socket.emit('left_room', {
                 room: room
             })
+        })
+
+        socket.on('docker_container_started', (data) => {
+            container_id = data.container_id
+            notificationBanner.style.opacity = '1'
+            notification.textContent = data.message
+        })
+
+        socket.on("gpt_response", (data) => {
+            container_id = data.container_id
+            outtext.textContent = `${outtext.textContent}\n${String(data.message)}`
+        })
+
+        socket.on('kill_response', (data) => {
+            notificationBanner.style.opacity = '1'
+            notification.textContent = data.message
+        })
+
+
+        killDocker.onclick = (() => {
+            socket.emit('kill_container', {
+                room: room,
+                container_id: container_id
+            })
+        })
+
+        closeNotification.onclick = (() => {
+            notificationBanner.style.opacity = '0'
         })
 
         editor.oninput = ((e) => {
@@ -92,11 +187,11 @@
             })
             console.log(goals)
             socket.emit('query_gpt', {
-                agent_name: 'Quazimoto',
-                agent_description: 'a lazy researcher',
+                agent_name: document.querySelector('#gpt-name').value,
+                agent_description: document.querySelector('#gpt-description').value,
                 goals: goals,
                 agent_continuous: true,
-                OPENAI_API_KEY: 'your-key-here.previous-leaked-key-deleted',
+                OPENAI_API_KEY: document.querySelector('#gpt-key').value,
                 room: room,
                 socket_server: socket_server,
             })

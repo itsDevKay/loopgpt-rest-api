@@ -13,14 +13,13 @@
     </div>
 
     <script>
+        function uuidv4() {
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            )
+        }
         document.querySelector('button').onclick = (() => {
-            fetch('https://jsonplaceholder.typicode.com/todos/1')
-            .then(response => response.json())
-            .then(json => {
-                room = json.title.split(' ')[0]
-                console.log(room)
-                window.location.href = `/chat?room=${room}`
-            })  
+            window.location.href = `/chat?room=${uuidv4()}`
         })
     </script>
 </body>

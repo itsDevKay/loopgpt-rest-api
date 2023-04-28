@@ -29,7 +29,7 @@ def room_left_handler(data):
 
 @socketio.on('query_gpt')
 def query_gpt(data):
-    socket_server = 'http://192.168.0.222:8000'
+    socket_server = os.environ.get('socket_server')
     room = data['room']
     agent_name = data['agent_name']
     agent_description = data['agent_description']
@@ -68,7 +68,8 @@ def query_gpt(data):
     
     agent_info = {
         'room': room,
-        'container': resp['response'].__dict__,
+        'container_dict': resp['response'].__dict__,
+        'container': resp['response'],
         'initiated_at': datetime.datetime.utcnow()
     }
     app.logger.info(agent_info)
@@ -77,7 +78,10 @@ def query_gpt(data):
     app.logger.info(f'[✅] Docker container started. Agent loading.."')
     socketio.emit(
         'docker_container_started',
-        f'[✅] Docker container started. Agent loading.."',
+        {
+            'message': f'[✅] Docker container started. Agent loading.."',
+            'container_id': resp['response'].id
+        },
         room=room
     )
 
@@ -85,7 +89,13 @@ def query_gpt(data):
 def gpt_response(data):
     room = data['room']
     message = data['message']
-    socketio.emit('gpt_response', message, room=room)
+    data = {
+        'message': message,
+        'container_id': list(
+            filter(lambda c: c['room'] == room, agents)
+        )[0]['container'].id
+    }
+    socketio.emit('gpt_response', data, room=room)
     app.logger.info(f'[✅] GPT Responded successfully to room [ {room} ] with message.')
 
 @socketio.on('kill_container')
@@ -94,7 +104,10 @@ def kill_container(data):
     container_id = data['container_id']
     container = dmanager.get_container(container_id)
     if container['status'] != 200:
-        socketio.emit('kill_response', f'No container found with id: {container_id}', room=room)
+        socketio.emit('kill_response', {'message': f'🚩 No container found with id: {container_id}'}, room=room)
+        app.logger.info(f'[🚩] No container found with id: {container_id}')
         return
-    container.kill()
-    socketio.emit('kill_response', f'Container [ {container_id} ] has been killed.', room=room)
+    container['response'].kill()
+    
+    socketio.emit('kill_response', {'message': f'✅ Container [ {container_id} ] has been killed.'}, room=room)
+    app.logger.info(f'[✅] Container [ {container_id} ] has been killed.')

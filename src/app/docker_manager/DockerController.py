@@ -71,8 +71,8 @@ class DockerController:
         
     def get_container(self, id):
         try:
-            container = self.client.get(id)
-            return container
+            container = self.client.containers.get(id)
+            return { 'status': 200, 'response': container }
         except docker.errors.NotFound as e:
             return { 'status': 'NotFound', 'response': str(e) }
         except docker.errors.APIError as e:
